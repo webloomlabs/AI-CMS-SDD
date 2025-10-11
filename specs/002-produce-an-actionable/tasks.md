@@ -79,6 +79,7 @@
 ### User Story Dependencies
 
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
+- **User Story 2 (P2)**: Can start after User Story 1 (P1) - Requires authentication for content operations
 
 ### Within Each User Story
 
@@ -108,13 +109,51 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ## Implementation Strategy
 
-### MVP First (User Story 1 Only)
+### MVP First (User Stories 1 & 2)
 
-1. Complete Phase 1: Setup
-2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
-3. Complete Phase 3: User Story 1
-4. **STOP and VALIDATE**: Test User Story 1 independently
-5. Deploy/demo if ready
+1. Complete Phase 1: Setup ✅
+2. Complete Phase 2: Foundational (CRITICAL - blocks all stories) ✅
+3. Complete Phase 3: User Story 1 (Authentication) ✅
+4. **VALIDATE**: Test User Story 1 independently ✅
+5. Complete Phase 4: User Story 2 (Content CRUD)
+6. **STOP and VALIDATE**: Test User Story 2 independently
+7. Deploy/demo if ready
+
+### Extended MVP (Add User Stories 3 & 4)
+
+8. Complete User Story 3: Media Upload & Management
+9. Complete User Story 4: AI Content Generation
+10. Full integration testing
+11. Production deployment
+
+---
+
+---
+
+## Phase 4: User Story 2 - Content CRUD Operations (Priority: P2) 🎯 MVP
+
+**Goal**: Enable editors to create, read, update, and delete content items with dynamic fields
+
+**Independent Test**: Can be fully tested by performing CRUD operations on content items and verifying persistence and display
+
+**Dependencies**: Requires Phase 2 (Foundational) and Phase 3 (US1 - Auth) to be complete
+
+### Tests for User Story 2 ⚠️
+
+**NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [x] T017 [P] [US2] Unit test for content service in backend/tests/unit/content.test.ts
+- [x] T018 [P] [US2] Integration test for content endpoints in backend/tests/integration/content.test.ts
+
+### Implementation for User Story 2
+
+- [x] T019 [US2] Create content service for CRUD operations in backend/src/services/content.ts
+- [x] T020 [US2] Implement content controller: GET/POST/PUT/DELETE /api/v1/content in backend/src/controllers/content.ts
+- [x] T021 [US2] Add validation middleware for content in backend/src/middleware/validation.ts
+- [x] T022 [US2] Wire content routes to Express app in backend/src/index.ts
+- [x] T023 [US2] Seed default content type and sample content item in backend/prisma/seed.ts
+
+**Checkpoint**: At this point, User Story 2 should be fully functional and testable independently
 
 ---
 
