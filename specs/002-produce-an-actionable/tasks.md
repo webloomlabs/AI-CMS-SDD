@@ -346,11 +346,11 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ### Documentation
 
-- [ ] T087 [P] Update README.md with complete setup instructions
-- [ ] T088 [P] Add API documentation in docs/API.md
-- [ ] T089 [P] Create deployment guide in docs/DEPLOYMENT.md
-- [ ] T090 [P] Document environment variables in .env.sample files
-- [ ] T091 [P] Add troubleshooting guide in docs/TROUBLESHOOTING.md
+- [X] T087 [P] Update README.md with complete setup instructions
+- [X] T088 [P] Add API documentation in docs/API.md
+- [X] T089 [P] Create deployment guide in docs/DEPLOYMENT.md
+- [X] T090 [P] Document environment variables in .env.sample files
+- [X] T091 [P] Add troubleshooting guide in docs/TROUBLESHOOTING.md
 
 ### Testing & Quality Assurance
 
