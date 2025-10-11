@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  roleId    Int
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[]
+
+  @@map("roles")
+}
+
+model ContentType {
+  id     Int            @id @default(autoincrement())
+  name   String         @unique
+  items  ContentItem[]
+  fields ContentField[]
+
+  @@map("content_types")
+}
+
+model ContentItem {
+  id            Int                    @id @default(autoincrement())
+  contentTypeId Int
+  contentType   ContentType            @relation(fields: [contentTypeId], references: [id])
+  title         String
+  slug          String                 @unique
+  status        String                 @default("draft")
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+  fields        ContentField[]
+  media         ContentMediaRelation[]
+
+  @@map("content_items")
+}
+
+model ContentField {
+  id            Int          @id @default(autoincrement())
+  contentTypeId Int?
+  contentType   ContentType? @relation(fields: [contentTypeId], references: [id])
+  contentItemId Int?
+  contentItem   ContentItem? @relation(fields: [contentItemId], references: [id])
+  name          String
+  type          String
+  value         String       @db.Text
+
+  @@map("content_fields")
+}
+
+model MediaFile {
+  id              Int                    @id @default(autoincrement())
+  filename        String
+  path            String
+  type            String
+  size            Int
+  width           Int?
+  height          Int?
+  folderId        Int?
+  folder          MediaFolder?           @relation(fields: [folderId], references: [id])
+  transformations MediaTransformation[]
+  content         ContentMediaRelation[]
+  createdAt       DateTime               @default(now())
+
+  @@map("media_files")
+}
+
+model MediaFolder {
+  id       Int           @id @default(autoincrement())
+  name     String
+  parentId Int?
+  parent   MediaFolder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  children MediaFolder[] @relation("FolderHierarchy")
+  files    MediaFile[]
+
+  @@map("media_folders")
+}
+
+model MediaTransformation {
+  id      Int       @id @default(autoincrement())
+  mediaId Int
+  media   MediaFile @relation(fields: [mediaId], references: [id])
+  type    String
+  params  String    @db.Text
+  path    String
+
+  @@map("media_transformations")
+}
+
+model ContentMediaRelation {
+  id        Int         @id @default(autoincrement())
+  contentId Int
+  content   ContentItem @relation(fields: [contentId], references: [id])
+  mediaId   Int
+  media     MediaFile   @relation(fields: [mediaId], references: [id])
+  altText   String?
+
+  @@map("content_media_relations")
+}

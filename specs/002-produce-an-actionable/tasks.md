@@ -34,12 +34,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T006 Setup Prisma with PostgreSQL schema in backend/prisma/schema.prisma
-- [ ] T007 Implement User and Role models in backend/prisma/schema.prisma
-- [ ] T008 Create database migration and seed admin user
-- [ ] T009 Implement auth service with JWT and bcrypt in backend/src/services/auth.ts
-- [ ] T010 Implement auth middleware for role-based access in backend/src/middleware/auth.ts
-- [ ] T011 Create health-check endpoint in backend/src/controllers/health.ts
+- [x] T006 Setup Prisma with PostgreSQL schema in backend/prisma/schema.prisma
+- [x] T007 Implement User and Role models in backend/prisma/schema.prisma
+- [x] T008 Create database migration and seed admin user
+- [x] T009 Implement auth service with JWT and bcrypt in backend/src/services/auth.ts
+- [x] T010 Implement auth middleware for role-based access in backend/src/middleware/auth.ts
+- [x] T011 Create health-check endpoint in backend/src/controllers/health.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
 
