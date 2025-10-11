@@ -294,12 +294,12 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ### Content Management Pages
 
-- [ ] T062 Create Dashboard layout component in frontend/src/components/Layout.tsx with navigation
-- [ ] T063 Create ContentList page in frontend/src/pages/ContentList.tsx to display all content
-- [ ] T064 [P] Create content service in frontend/src/services/content.ts for CRUD operations
-- [ ] T065 Create ContentEditor page in frontend/src/pages/ContentEditor.tsx for create/edit
-- [ ] T066 [P] Add dynamic field rendering in ContentEditor based on content type
-- [ ] T067 [P] Create ContentCard component in frontend/src/components/ContentCard.tsx for list view
+- [X] T062 Create Dashboard layout component in frontend/src/components/Layout.tsx with navigation
+- [X] T063 Create ContentList page in frontend/src/pages/ContentList.tsx to display all content
+- [X] T064 [P] Create content service in frontend/src/services/content.ts for CRUD operations
+- [X] T065 Create ContentEditor page in frontend/src/pages/ContentEditor.tsx for create/edit
+- [X] T066 [P] Add dynamic field rendering in ContentEditor based on content type
+- [X] T067 [P] Create ContentCard component in frontend/src/components/ContentCard.tsx for list view
 
 ### Media Library
 

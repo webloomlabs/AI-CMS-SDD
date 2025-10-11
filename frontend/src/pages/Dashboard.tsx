@@ -1,28 +1,22 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import Layout from '../components/Layout';
 
 const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <Layout>
+      <div>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Dashboard
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Welcome back, {user?.name}!
-              </p>
-            </div>
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-            >
-              Logout
-            </button>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              Welcome back, {user?.name}!
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -56,12 +50,12 @@ const Dashboard: React.FC = () => {
               Quick Actions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-500 transition-colors cursor-pointer">
+              <Link to="/content/new" className="block border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-blue-500 transition-colors">
                 <p className="text-gray-600 dark:text-gray-400">Create New Content</p>
-              </div>
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-green-500 transition-colors cursor-pointer">
+              </Link>
+              <Link to="/media" className="block border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-green-500 transition-colors">
                 <p className="text-gray-600 dark:text-gray-400">Upload Media</p>
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -72,7 +66,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

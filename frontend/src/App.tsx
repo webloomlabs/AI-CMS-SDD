@@ -4,6 +4,8 @@ import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import ContentList from './pages/ContentList';
+import ContentEditor from './pages/ContentEditor';
 
 function App() {
   return (
@@ -16,6 +18,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content"
+            element={
+              <ProtectedRoute>
+                <ContentList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content/new"
+            element={
+              <ProtectedRoute>
+                <ContentEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content/edit/:id"
+            element={
+              <ProtectedRoute>
+                <ContentEditor />
               </ProtectedRoute>
             }
           />
