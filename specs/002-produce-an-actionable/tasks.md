@@ -265,20 +265,20 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ### Authentication UI & State
 
-- [ ] T051 [P] Create API client service in frontend/src/services/api.ts with axios instance
-- [ ] T052 [P] Create auth service in frontend/src/services/auth.ts for login/logout/token management
-- [ ] T053 [P] Create auth context/hook in frontend/src/hooks/useAuth.ts for state management
-- [ ] T054 Create Login page component in frontend/src/pages/Login.tsx with form validation
-- [ ] T055 [P] Create ProtectedRoute component in frontend/src/components/ProtectedRoute.tsx
-- [ ] T056 Set up React Router in frontend/src/App.tsx with login and protected routes
-- [ ] T057 [P] Create basic UI components: Button, Input, Card in frontend/src/components/ui/
+- [X] T051 [P] Create API client service in frontend/src/services/api.ts with axios instance
+- [X] T052 [P] Create auth service in frontend/src/services/auth.ts for login/logout/token management
+- [X] T053 [P] Create auth context/hook in frontend/src/hooks/useAuth.tsx for state management
+- [X] T054 Create Login page component in frontend/src/pages/Login.tsx with form validation
+- [X] T055 [P] Create ProtectedRoute component in frontend/src/components/ProtectedRoute.tsx
+- [X] T056 Set up React Router in frontend/src/App.tsx with login and protected routes
+- [X] T057 [P] Create basic UI components: Button, Input, Card in frontend/src/components/ui/
 
 ### Testing & Styling
 
-- [ ] T058 [P] Write tests for Login component in frontend/tests/Login.test.tsx
-- [ ] T059 [P] Write tests for auth service in frontend/tests/auth.test.ts
-- [ ] T060 [P] Add responsive styling and layout in frontend/src/App.css
-- [ ] T061 [P] Update frontend .env.sample with REACT_APP_API_URL
+- [X] T058 [P] Write tests for Login component in frontend/tests/Login.test.tsx
+- [X] T059 [P] Write tests for auth service in frontend/tests/auth.test.ts
+- [X] T060 [P] Add responsive styling and layout in frontend/src/App.css
+- [X] T061 [P] Update frontend .env.sample with REACT_APP_API_URL
 
 **Checkpoint**: At this point, frontend should be set up with working login page
 
