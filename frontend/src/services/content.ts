@@ -154,8 +154,36 @@ class ContentService {
   /**
    * Update an existing content item
    */
-  async updateContentItem(id: string, data: UpdateContentData): Promise<ContentItem> {
-    const response = await api.put<any>(`/content/${id}`, data);
+  async updateContentItem(
+    id: string,
+    data: UpdateContentData,
+    contentType?: ContentType
+  ): Promise<ContentItem> {
+    // Transform fieldValues object into fields array expected by backend
+    const fields = data.fieldValues 
+      ? Object.entries(data.fieldValues).map(([name, value]) => {
+          // Find the field definition to get the correct type
+          const fieldDef = contentType?.fields.find(f => f.name === name);
+          return {
+            name,
+            type: fieldDef?.type || 'text',
+            value: String(value),
+          };
+        })
+      : undefined;
+
+    const requestData: any = {
+      title: data.title,
+      slug: data.slug,
+      status: data.status,
+    };
+
+    // Only include fields if they exist
+    if (fields && fields.length > 0) {
+      requestData.fields = fields;
+    }
+
+    const response = await api.put<any>(`/content/${id}`, requestData);
     return transformContentItem(response.data);
   }
 

@@ -170,12 +170,16 @@ const ContentEditor: React.FC = () => {
       setLoading(true);
 
       if (isEditMode && id) {
-        await contentService.updateContentItem(id, {
-          title,
-          slug,
-          status,
-          fieldValues,
-        });
+        await contentService.updateContentItem(
+          id,
+          {
+            title,
+            slug,
+            status,
+            fieldValues,
+          },
+          selectedType || undefined // Pass content type for field type mapping
+        );
       } else {
         // Pass the selected content type to the service for field type information
         const response = await contentService.createContentItem(
