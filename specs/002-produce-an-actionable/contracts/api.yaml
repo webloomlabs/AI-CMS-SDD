@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  title: AI-Native CMS API
+  version: 1.0.0
+  description: API for content management, media, and AI generation
+
+servers:
+  - url: http://localhost:3001/api/v1
+
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+
+  /content:
+    get:
+      summary: List content items
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentItem'
+    post:
+      summary: Create content item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentItemInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+
+  /content/{id}:
+    get:
+      summary: Get content item
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+    put:
+      summary: Update content item
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentItemInput'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+    delete:
+      summary: Delete content item
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+
+  /media/upload:
+    post:
+      summary: Upload media file
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaFile'
+
+  /media:
+    get:
+      summary: List media files
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaFile'
+
+  /media/{id}:
+    delete:
+      summary: Delete media file
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+
+  /ai/generate:
+    post:
+      summary: Generate content with AI
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                prompt:
+                  type: string
+                mode:
+                  type: string
+                  enum: [draft, seo, alt_text]
+              required:
+                - prompt
+                - mode
+      responses:
+        '200':
+          description: Generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ContentItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        slug:
+          type: string
+        status:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentField'
+    ContentItemInput:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        status:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentField'
+      required:
+        - title
+    ContentField:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        value:
+          type: string
+    MediaFile:
+      type: object
+      properties:
+        id:
+          type: integer
+        filename:
+          type: string
+        path:
+          type: string
+        type:
+          type: string
+        size:
+          type: integer
+        width:
+          type: integer
+        height:
+          type: integer
