@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { healthCheck } from './controllers/health';
+import { login, loginValidation } from './controllers/auth';
 
 // Load environment variables
 dotenv.config();
@@ -14,8 +15,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check route
+// Routes
 app.get('/api/v1/health', healthCheck);
+app.post('/api/v1/auth/login', loginValidation, login);
 
 // 404 handler
 app.use((_req, res) => {

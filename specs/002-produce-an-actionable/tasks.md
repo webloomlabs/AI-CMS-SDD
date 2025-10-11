@@ -55,14 +55,14 @@
 
 **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T012 [P] [US1] Unit test for auth service in backend/tests/unit/auth.test.ts
-- [ ] T013 [P] [US1] Integration test for login endpoint in backend/tests/integration/auth.test.ts
+- [x] T012 [P] [US1] Unit test for auth service in backend/tests/unit/auth.test.ts
+- [x] T013 [P] [US1] Integration test for login endpoint in backend/tests/integration/auth.test.ts
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Create auth controller: POST /api/v1/auth/login in backend/src/controllers/auth.ts
-- [ ] T015 [US1] Wire auth controller to Express app in backend/src/index.ts
-- [ ] T016 [US1] Update .env.sample with DATABASE_URL, JWT_SECRET
+- [x] T014 [US1] Create auth controller: POST /api/v1/auth/login in backend/src/controllers/auth.ts
+- [x] T015 [US1] Wire auth controller to Express app in backend/src/index.ts
+- [x] T016 [US1] Update .env.sample with DATABASE_URL, JWT_SECRET
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
