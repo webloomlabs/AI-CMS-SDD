@@ -303,11 +303,11 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ### Media Library
 
-- [ ] T068 Create MediaLibrary modal component in frontend/src/components/MediaLibrary.tsx
-- [ ] T069 [P] Create media service in frontend/src/services/media.ts for upload/list/delete
-- [ ] T070 [P] Add drag-and-drop upload support in MediaLibrary component
-- [ ] T071 [P] Create MediaGrid component in frontend/src/components/MediaGrid.tsx for displaying media
-- [ ] T072 Implement media selection and attachment to content in ContentEditor
+- [X] T068 Create MediaLibrary modal component in frontend/src/components/MediaLibrary.tsx
+- [X] T069 [P] Create media service in frontend/src/services/media.ts for upload/list/delete
+- [X] T070 [P] Add drag-and-drop upload support in MediaLibrary component
+- [X] T071 [P] Create MediaGrid component in frontend/src/components/MediaGrid.tsx for displaying media
+- [X] T072 Implement media selection and attachment to content in ContentEditor
 
 ### AI Integration UI
 

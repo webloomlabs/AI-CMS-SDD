@@ -15,8 +15,8 @@ export const validateRequest = (
 };
 
 export const validateContentType = async (
-  req: Request,
-  res: Response,
+  _req: Request,
+  _res: Response,
   next: NextFunction
 ): Promise<void> => {
   // Validate that contentTypeId exists

@@ -4,7 +4,9 @@ import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
+import MediaLibrary from '../components/MediaLibrary';
 import contentService, { ContentType, ContentItem, ContentField } from '../services/content';
+import { MediaFile } from '../services/media';
 
 const ContentEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,37 +23,55 @@ const ContentEditor: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(isEditMode);
   const [error, setError] = useState('');
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+  const [currentMediaField, setCurrentMediaField] = useState<string | null>(null);
 
   useEffect(() => {
     loadContentTypes();
     if (isEditMode && id) {
       loadContentItem(id);
+    } else {
+      setInitialLoadComplete(true);
     }
   }, [id, isEditMode]);
 
   useEffect(() => {
-    if (selectedTypeId) {
+    console.log('useEffect triggered:', { selectedTypeId, isEditMode, initialLoadComplete });
+    
+    if (selectedTypeId && !isEditMode && initialLoadComplete) {
       const type = contentTypes.find((t) => t.id === selectedTypeId);
       setSelectedType(type || null);
       
-      // Initialize field values
-      if (type && !isEditMode) {
+      console.log('Initializing field values for new content');
+      // Initialize field values only for new content
+      if (type) {
         const initialValues: Record<string, any> = {};
         type.fields.forEach((field) => {
           initialValues[field.name] = '';
         });
         setFieldValues(initialValues);
       }
+    } else if (selectedTypeId && isEditMode) {
+      // Just set the selected type, don't reinitialize field values
+      const type = contentTypes.find((t) => t.id === selectedTypeId);
+      console.log('Setting selected type for edit mode:', type);
+      setSelectedType(type || null);
     }
-  }, [selectedTypeId, contentTypes, isEditMode]);
+  }, [selectedTypeId, contentTypes, isEditMode, initialLoadComplete]);
 
   const loadContentTypes = async () => {
     try {
       const types = await contentService.getContentTypes();
+      console.log('Content types loaded:', types);
       setContentTypes(types);
+      
+      if (types.length === 0) {
+        setError('No content types available. Please contact your administrator.');
+      }
     } catch (err: any) {
       console.error('Failed to load content types:', err);
-      setError('Failed to load content types');
+      setError('Failed to load content types: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -60,11 +80,15 @@ const ContentEditor: React.FC = () => {
       setLoadingData(true);
       const item = await contentService.getContentItem(itemId);
       
+      console.log('Loaded content item:', item);
+      console.log('Field values:', item.fieldValues);
+      
       setSelectedTypeId(item.contentTypeId);
       setTitle(item.title);
       setSlug(item.slug);
       setStatus(item.status);
       setFieldValues(item.fieldValues || {});
+      setInitialLoadComplete(true);
     } catch (err: any) {
       console.error('Failed to load content item:', err);
       setError('Failed to load content item');
@@ -85,6 +109,19 @@ const ContentEditor: React.FC = () => {
       ...fieldValues,
       [fieldName]: value,
     });
+  };
+
+  const handleMediaSelect = (fieldName: string) => {
+    setCurrentMediaField(fieldName);
+    setShowMediaLibrary(true);
+  };
+
+  const handleMediaSelected = (media: MediaFile) => {
+    if (currentMediaField) {
+      handleFieldChange(currentMediaField, media.id);
+      setShowMediaLibrary(false);
+      setCurrentMediaField(null);
+    }
   };
 
   const validateForm = (): boolean => {
@@ -140,19 +177,24 @@ const ContentEditor: React.FC = () => {
           fieldValues,
         });
       } else {
-        await contentService.createContentItem({
-          contentTypeId: selectedTypeId,
-          title,
-          slug,
-          status,
-          fieldValues,
-        });
+        // Pass the selected content type to the service for field type information
+        const response = await contentService.createContentItem(
+          {
+            contentTypeId: selectedTypeId,
+            title,
+            slug,
+            status,
+            fieldValues,
+          },
+          selectedType || undefined // Pass the content type for proper field type mapping
+        );
       }
 
       navigate('/content');
     } catch (err: any) {
       console.error('Failed to save content:', err);
-      setError(err.response?.data?.message || 'Failed to save content');
+      console.error('Response data:', err.response?.data);
+      setError(err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || 'Failed to save content');
     } finally {
       setLoading(false);
     }
@@ -175,13 +217,14 @@ const ContentEditor: React.FC = () => {
         );
 
       case 'textarea':
+      case 'rich_text':
         return (
           <textarea
-            value={value}
+            value={typeof value === 'object' ? JSON.stringify(value, null, 2) : value}
             onChange={(e) => handleFieldChange(field.name, e.target.value)}
             required={field.required}
-            rows={4}
-            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            rows={field.type === 'rich_text' ? 10 : 4}
+            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 font-mono"
           />
         );
 
@@ -218,6 +261,24 @@ const ContentEditor: React.FC = () => {
             onChange={(e) => handleFieldChange(field.name, e.target.value)}
             required={field.required}
           />
+        );
+
+      case 'image':
+        return (
+          <div className="space-y-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleMediaSelect(field.name)}
+            >
+              {value ? 'Change Image' : 'Select Image'}
+            </Button>
+            {value && (
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                Media ID: {value}
+              </div>
+            )}
+          </div>
         );
 
       default:
@@ -341,15 +402,32 @@ const ContentEditor: React.FC = () => {
                 <CardTitle>Content Fields</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {selectedType.fields.map((field) => (
-                  <div key={field.id}>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      {field.name} {field.required && '*'}
-                      <span className="text-xs text-gray-500 ml-2">({field.type})</span>
-                    </label>
-                    {renderFieldInput(field)}
-                  </div>
-                ))}
+                {(() => {
+                  console.log('Rendering fields, selectedType:', selectedType);
+                  console.log('Fields array:', selectedType.fields);
+                  console.log('Fields count:', selectedType.fields.length);
+                  
+                  // Remove duplicates by field name
+                  const uniqueFields = selectedType.fields.reduce((acc: ContentField[], field) => {
+                    if (!acc.find(f => f.name === field.name)) {
+                      acc.push(field);
+                    }
+                    return acc;
+                  }, []);
+                  
+                  console.log('Unique fields:', uniqueFields);
+                  console.log('Unique fields count:', uniqueFields.length);
+                  
+                  return uniqueFields.map((field) => (
+                    <div key={field.id}>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {field.name} {field.required && '*'}
+                        <span className="text-xs text-gray-500 ml-2">({field.type})</span>
+                      </label>
+                      {renderFieldInput(field)}
+                    </div>
+                  ));
+                })()}
               </CardContent>
             </Card>
           )}
@@ -369,6 +447,17 @@ const ContentEditor: React.FC = () => {
             </Button>
           </div>
         </form>
+
+        {/* Media Library Modal */}
+        <MediaLibrary
+          isOpen={showMediaLibrary}
+          onClose={() => {
+            setShowMediaLibrary(false);
+            setCurrentMediaField(null);
+          }}
+          onSelect={handleMediaSelected}
+          selectable={true}
+        />
       </div>
     </Layout>
   );

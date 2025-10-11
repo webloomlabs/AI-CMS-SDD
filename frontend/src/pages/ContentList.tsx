@@ -35,7 +35,7 @@ const ContentList: React.FC = () => {
         params.status = selectedStatus;
       }
 
-      const items = await contentService.getContentItems(params);
+      const items = await contentService.listContentItems(params);
       setContentItems(items);
     } catch (err: any) {
       console.error('Failed to load content:', err);

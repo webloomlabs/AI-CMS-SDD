@@ -1,5 +1,22 @@
 import api from './api';
 
+// Helper function to transform backend response with fields array to frontend format with fieldValues object
+const transformContentItem = (item: any): ContentItem => {
+  const fieldValues: Record<string, any> = {};
+  
+  // Transform fields array to fieldValues object
+  if (item.fields && Array.isArray(item.fields)) {
+    item.fields.forEach((field: any) => {
+      fieldValues[field.name] = field.value;
+    });
+  }
+
+  return {
+    ...item,
+    fieldValues,
+  };
+};
+
 export interface ContentField {
   id: string;
   name: string;
@@ -32,7 +49,7 @@ export interface ContentItem {
     name: string;
     email: string;
   };
-  fieldValues: Record<string, any>;
+  fieldValues?: Record<string, any>;
   createdAt: string;
   updatedAt: string;
 }
@@ -70,40 +87,76 @@ class ContentService {
   }
 
   /**
-   * Get all content items
+   * Create a new content type
    */
-  async getContentItems(params?: {
+  async createContentType(data: {
+    name: string;
+    description?: string;
+    fields: Array<{
+      name: string;
+      type: string;
+      required: boolean;
+      description?: string;
+    }>;
+  }): Promise<ContentType> {
+    const response = await api.post<ContentType>('/content/types', data);
+    return response.data;
+  }
+
+  /**
+   * List all content items with optional filters
+   */
+  async listContentItems(params?: {
     contentTypeId?: string;
     status?: string;
-    limit?: number;
-    offset?: number;
   }): Promise<ContentItem[]> {
-    const response = await api.get<ContentItem[]>('/content', { params });
-    return response.data;
+    const response = await api.get<any[]>('/content', { params });
+    return response.data.map(transformContentItem);
   }
 
   /**
    * Get a single content item by ID
    */
   async getContentItem(id: string): Promise<ContentItem> {
-    const response = await api.get<ContentItem>(`/content/${id}`);
-    return response.data;
+    const response = await api.get<any>(`/content/${id}`);
+    return transformContentItem(response.data);
   }
 
   /**
    * Create a new content item
    */
-  async createContentItem(data: CreateContentData): Promise<ContentItem> {
-    const response = await api.post<ContentItem>('/content', data);
-    return response.data;
+  async createContentItem(data: CreateContentData, contentType?: ContentType): Promise<ContentItem> {
+    // Transform fieldValues object into fields array expected by backend
+    const fields = data.fieldValues 
+      ? Object.entries(data.fieldValues).map(([name, value]) => {
+          // Find the field definition to get the correct type
+          const fieldDef = contentType?.fields.find(f => f.name === name);
+          return {
+            name,
+            type: fieldDef?.type || 'text',
+            value: String(value),
+          };
+        })
+      : [];
+
+    const requestData = {
+      contentTypeId: data.contentTypeId,
+      title: data.title,
+      slug: data.slug,
+      status: data.status || 'draft',
+      fields,
+    };
+
+    const response = await api.post<any>('/content', requestData);
+    return transformContentItem(response.data);
   }
 
   /**
    * Update an existing content item
    */
   async updateContentItem(id: string, data: UpdateContentData): Promise<ContentItem> {
-    const response = await api.put<ContentItem>(`/content/${id}`, data);
-    return response.data;
+    const response = await api.put<any>(`/content/${id}`, data);
+    return transformContentItem(response.data);
   }
 
   /**

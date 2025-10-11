@@ -55,8 +55,11 @@ export class ContentService {
         ...contentData,
         fields: {
           create: fields.map(field => ({
-            ...field,
-            contentTypeId: input.contentTypeId,
+            name: field.name,
+            type: field.type,
+            value: field.value,
+            // DO NOT set contentTypeId here - field values belong only to content items
+            // contentTypeId should only be set for field definitions, not field values
           })),
         },
       },

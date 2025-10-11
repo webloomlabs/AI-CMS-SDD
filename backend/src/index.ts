@@ -17,6 +17,11 @@ import {
   listContentValidation,
 } from './controllers/content';
 import {
+  listContentTypes,
+  getContentType,
+  createContentType,
+} from './controllers/contentType';
+import {
   uploadMedia,
   listMedia,
   getMedia,
@@ -54,6 +59,26 @@ app.use('/uploads', express.static(uploadPath));
 // Routes
 app.get('/api/v1/health', healthCheck);
 app.post('/api/v1/auth/login', loginValidation, login);
+
+// Content Type routes - all require authentication
+app.get(
+  '/api/v1/content/types',
+  authenticateToken,
+  listContentTypes
+);
+
+app.post(
+  '/api/v1/content/types',
+  authenticateToken,
+  requireEditor,
+  createContentType
+);
+
+app.get(
+  '/api/v1/content/types/:id',
+  authenticateToken,
+  getContentType
+);
 
 // Content routes - all require authentication
 app.post(

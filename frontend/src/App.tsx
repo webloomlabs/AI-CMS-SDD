@@ -6,6 +6,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ContentList from './pages/ContentList';
 import ContentEditor from './pages/ContentEditor';
+import ContentTypeList from './pages/ContentTypeList';
+import ContentTypeEditor from './pages/ContentTypeEditor';
+import MediaPage from './pages/MediaPage';
 
 function App() {
   return (
@@ -42,6 +45,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <ContentEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content-types"
+            element={
+              <ProtectedRoute>
+                <ContentTypeList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/content-types/new"
+            element={
+              <ProtectedRoute>
+                <ContentTypeEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/media"
+            element={
+              <ProtectedRoute>
+                <MediaPage />
               </ProtectedRoute>
             }
           />

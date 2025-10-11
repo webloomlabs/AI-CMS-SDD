@@ -86,7 +86,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ content, onDelete }) => {
         </div>
 
         {/* Preview of field values */}
-        {Object.keys(content.fieldValues).length > 0 && (
+        {content.fieldValues && Object.keys(content.fieldValues).length > 0 && (
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
               Fields: {Object.keys(content.fieldValues).length}

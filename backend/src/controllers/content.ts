@@ -48,13 +48,14 @@ export const createContent = async (req: Request, res: Response): Promise<void> 
   }
 
   try {
-    const { slug, ...input } = req.body;
+    const { slug, contentTypeId, ...input } = req.body;
 
     // Generate slug if not provided
     const finalSlug = slug || await contentService.generateSlug(input.title);
 
     const content = await contentService.createContent({
       ...input,
+      contentTypeId: parseInt(contentTypeId, 10), // Parse string to integer
       slug: finalSlug,
     });
 
