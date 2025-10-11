@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import ContentCard from '../components/ContentCard';
 import { Button } from '../components/ui/button';
+import { useToast } from '../components/Toast';
 import contentService, { ContentItem, ContentType } from '../services/content';
 
 const ContentList: React.FC = () => {
+  const toast = useToast();
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
   const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,12 +48,18 @@ const ContentList: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this content item?')) {
+      return;
+    }
+
     try {
       await contentService.deleteContentItem(id);
       setContentItems(contentItems.filter((item) => item.id !== id));
+      toast.success('Content deleted successfully');
     } catch (err: any) {
       console.error('Failed to delete content:', err);
-      alert(err.response?.data?.message || 'Failed to delete content');
+      const errorMessage = err.response?.data?.message || 'Failed to delete content';
+      toast.error(errorMessage);
     }
   };
 

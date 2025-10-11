@@ -5,12 +5,15 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
 import MediaLibrary from '../components/MediaLibrary';
+import AIGenerateModal from '../components/AIGenerateModal';
+import { useToast } from '../components/Toast';
 import contentService, { ContentType, ContentItem, ContentField } from '../services/content';
 import { MediaFile } from '../services/media';
 
 const ContentEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const toast = useToast();
   const isEditMode = !!id;
 
   const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
@@ -26,6 +29,8 @@ const ContentEditor: React.FC = () => {
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [currentMediaField, setCurrentMediaField] = useState<string | null>(null);
+  const [showAIModal, setShowAIModal] = useState(false);
+  const [aiModalMode, setAIModalMode] = useState<'draft' | 'seo' | 'alt_text'>('draft');
 
   useEffect(() => {
     loadContentTypes();
@@ -124,6 +129,40 @@ const ContentEditor: React.FC = () => {
     }
   };
 
+  const handleAIGenerate = (mode: 'draft' | 'seo' | 'alt_text') => {
+    setAIModalMode(mode);
+    setShowAIModal(true);
+  };
+
+  const handleAIResult = (result: string | { title: string; description: string; keywords: string }) => {
+    if (aiModalMode === 'draft') {
+      // For draft mode, update the first textarea/rich_text field
+      const contentField = selectedType?.fields.find(
+        f => f.type === 'textarea' || f.type === 'rich_text'
+      );
+      if (contentField) {
+        handleFieldChange(contentField.name, result as string);
+      }
+    } else if (aiModalMode === 'seo' && typeof result === 'object') {
+      // For SEO mode, update title and create/update SEO fields
+      setTitle(result.title);
+      handleTitleChange(result.title);
+      
+      // Update description field if exists
+      const descField = selectedType?.fields.find(f => f.name.toLowerCase().includes('description'));
+      if (descField) {
+        handleFieldChange(descField.name, result.description);
+      }
+      
+      // Update keywords field if exists
+      const keywordsField = selectedType?.fields.find(f => f.name.toLowerCase().includes('keyword'));
+      if (keywordsField) {
+        handleFieldChange(keywordsField.name, result.keywords);
+      }
+    }
+    setShowAIModal(false);
+  };
+
   const validateForm = (): boolean => {
     if (!selectedTypeId) {
       setError('Please select a content type');
@@ -180,9 +219,10 @@ const ContentEditor: React.FC = () => {
           },
           selectedType || undefined // Pass content type for field type mapping
         );
+        toast.success('Content updated successfully!');
       } else {
         // Pass the selected content type to the service for field type information
-        const response = await contentService.createContentItem(
+        await contentService.createContentItem(
           {
             contentTypeId: selectedTypeId,
             title,
@@ -192,13 +232,16 @@ const ContentEditor: React.FC = () => {
           },
           selectedType || undefined // Pass the content type for proper field type mapping
         );
+        toast.success('Content created successfully!');
       }
 
       navigate('/content');
     } catch (err: any) {
       console.error('Failed to save content:', err);
       console.error('Response data:', err.response?.data);
-      setError(err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || 'Failed to save content');
+      const errorMessage = err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || 'Failed to save content';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -312,13 +355,34 @@ const ContentEditor: React.FC = () => {
     <Layout>
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {isEditMode ? 'Edit Content' : 'Create Content'}
-          </h1>
-          <p className="mt-1 text-gray-600 dark:text-gray-400">
-            {isEditMode ? 'Update your content item' : 'Create a new content item'}
-          </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              {isEditMode ? 'Edit Content' : 'Create Content'}
+            </h1>
+            <p className="mt-1 text-gray-600 dark:text-gray-400">
+              {isEditMode ? 'Update your content item' : 'Create a new content item'}
+            </p>
+          </div>
+          {selectedType && (
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleAIGenerate('draft')}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+              >
+                ✨ Generate Draft
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleAIGenerate('seo')}
+              >
+                🎯 Generate SEO
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Error Message */}
@@ -461,6 +525,21 @@ const ContentEditor: React.FC = () => {
           }}
           onSelect={handleMediaSelected}
           selectable={true}
+        />
+
+        {/* AI Generate Modal */}
+        <AIGenerateModal
+          isOpen={showAIModal}
+          mode={aiModalMode}
+          onClose={() => setShowAIModal(false)}
+          onGenerate={handleAIResult}
+          currentContent={
+            aiModalMode === 'draft' 
+              ? title 
+              : aiModalMode === 'seo'
+              ? Object.values(fieldValues).join('\n')
+              : ''
+          }
         />
       </div>
     </Layout>

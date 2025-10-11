@@ -311,18 +311,18 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ### AI Integration UI
 
-- [ ] T073 [P] Create AI service in frontend/src/services/ai.ts for generate requests
-- [ ] T074 [P] Add "Generate with AI" button in ContentEditor
-- [ ] T075 [P] Create AIGenerateModal component in frontend/src/components/AIGenerateModal.tsx
-- [ ] T076 Integrate AI generation into content workflow (draft, SEO, alt text)
+- [X] T073 [P] Create AI service in frontend/src/services/ai.ts for generate requests
+- [X] T074 [P] Add "Generate with AI" button in ContentEditor
+- [X] T075 [P] Create AIGenerateModal component in frontend/src/components/AIGenerateModal.tsx
+- [X] T076 Integrate AI generation into content workflow (draft, SEO, alt text)
 
 ### Polish & Testing
 
-- [ ] T077 [P] Add loading states and error handling across all pages
-- [ ] T078 [P] Implement toast notifications in frontend/src/components/Toast.tsx
-- [ ] T079 [P] Add responsive design for mobile and tablet views
-- [ ] T080 [P] Write component tests for ContentList, ContentEditor, MediaLibrary
-- [ ] T081 [P] Add accessibility features (ARIA labels, keyboard navigation)
+- [X] T077 [P] Add loading states and error handling across all pages
+- [X] T078 [P] Implement toast notifications in frontend/src/components/Toast.tsx
+- [X] T079 [P] Add responsive design for mobile and tablet views
+- [X] T080 [P] Write component tests for ContentList, ContentEditor, MediaLibrary
+- [X] T081 [P] Add accessibility features (ARIA labels, keyboard navigation)
 
 **Checkpoint**: At this point, full admin dashboard should be functional
 
