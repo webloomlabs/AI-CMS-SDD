@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/002-produce-an-actionable/`
 **Prerequisit## Implementation Strategy
 
-### MVP First (User Stories 1, 2 & 3)
+### MVP First (User Stories 1-4 - Backend Complete)
 
 1. Complete Phase 1: Setup ✅
 2. Complete Phase 2: Foundational (CRITICAL - blocks all stories) ✅
@@ -11,16 +11,21 @@
 4. **VALIDATE**: Test User Story 1 independently ✅
 5. Complete Phase 4: User Story 2 (Content CRUD) ✅
 6. **VALIDATE**: Test User Story 2 independently ✅
-7. Complete Phase 5: User Story 3 (Media Upload & Management)
-8. **STOP and VALIDATE**: Test User Story 3 independently
-9. **END-TO-END TEST**: Auth → Create Content → Upload Media → Attach → Publish
-10. Deploy/demo if ready
+7. Complete Phase 5: User Story 3 (Media Upload & Management) ✅
+8. **VALIDATE**: Test User Story 3 independently ✅
+9. Complete Phase 6: User Story 4 (AI Content Generation) ✅
+10. **VALIDATE**: Test User Story 4 independently ✅
+11. **BACKEND COMPLETE**: All 119 tests passing ✅
 
-### Extended MVP (Add User Story 4)
+### Full Stack MVP (Add Frontend - Days 5-7)
 
-11. Complete User Story 4: AI Content Generation
-12. Full integration testing
-13. Production deployment
+12. Complete Phase 7: Frontend Setup & Login (Day 5)
+13. **VALIDATE**: Login page working with backend auth
+14. Complete Phase 8: Admin Dashboard UI (Day 6)
+15. **VALIDATE**: Full admin dashboard functional
+16. Complete Phase 9: Deployment & Polish (Day 7)
+17. **END-TO-END TEST**: Complete user journey from login to publish
+18. **DEMO READY**: Application deployed and ready for presentation
 
 ---red), spec.md (required for user stories), research.md, data-model.md, contracts/
 
@@ -102,6 +107,7 @@
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
 - **User Story 2 (P2)**: Can start after User Story 1 (P1) - Requires authentication for content operations
 - **User Story 3 (P3)**: Can start after User Story 2 (P2) - Requires content items to attach media to
+- **User Story 4 (P4)**: Can start after Foundational (Phase 2) - Independent of User Stories 2 and 3, only requires authentication
 
 ### Within Each User Story
 
@@ -211,6 +217,215 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ---
 
+## Phase 6: User Story 4 - AI Content Generation (Priority: P4) 🎯 Extended MVP
+
+**Goal**: Enable editors to use AI to generate content drafts, SEO metadata, or alt text to accelerate content creation
+
+**Independent Test**: Can be fully tested by calling the AI generate endpoint with different modes and verifying responses (both with real AI provider and stub fallback)
+
+**Dependencies**: Requires Phase 2 (Foundational) and Phase 3 (US1 - Auth) to be complete. Can run independently of Phase 4 and Phase 5.
+
+### Tests for User Story 4 ⚠️
+
+**NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [x] T036 [P] [US4] Unit test for AI service with stub provider in backend/tests/unit/ai.test.ts
+- [x] T037 [P] [US4] Unit test for Gemini AI provider in backend/tests/unit/aiProviders.test.ts
+- [x] T038 [P] [US4] Integration test for AI generate endpoint in backend/tests/integration/ai.test.ts
+
+### Implementation for User Story 4
+
+- [x] T039 [US4] Create AI provider interface in backend/src/utils/ai/AIProvider.ts
+- [x] T040 [US4] Implement StubAIProvider for deterministic testing in backend/src/utils/ai/StubAIProvider.ts
+- [x] T041 [US4] Implement GeminiAIProvider for Google Gemini integration in backend/src/utils/ai/GeminiAIProvider.ts
+- [x] T042 [US4] Create AI service for generate operations with provider factory in backend/src/services/ai.ts
+- [x] T043 [US4] Implement AI controller: POST /api/v1/ai/generate with mode support in backend/src/controllers/ai.ts
+- [x] T044 [US4] Wire AI routes to Express app in backend/src/index.ts
+- [x] T045 [US4] Update .env and .env.sample with AI_PROVIDER (default: gemini) and GEMINI_API_KEY
+
+**Checkpoint**: At this point, User Story 4 should be fully functional and testable independently
+
+---
+
+## Phase 7: Frontend Setup & Login (Day 5)
+
+**Goal**: Set up React frontend with TypeScript, Tailwind, and shadcn/ui, implement login page
+
+**Independent Test**: Can be fully tested by running the frontend, submitting login form, and verifying authentication flow
+
+**Dependencies**: Requires Phase 3 (US1 - Auth API) to be complete
+
+### Frontend Initialization
+
+- [X] T046 [P] Initialize frontend project with Create React App + TypeScript in frontend/
+- [X] T047 [P] Install dependencies: react-router-dom, axios, tailwindcss, shadcn/ui in frontend/
+- [X] T048 [P] Configure Tailwind CSS in frontend/tailwind.config.js
+- [X] T049 [P] Set up shadcn/ui components library in frontend/
+- [X] T050 [P] Create project structure: frontend/src/components/, frontend/src/pages/, frontend/src/services/, frontend/src/hooks/
+
+### Authentication UI & State
+
+- [ ] T051 [P] Create API client service in frontend/src/services/api.ts with axios instance
+- [ ] T052 [P] Create auth service in frontend/src/services/auth.ts for login/logout/token management
+- [ ] T053 [P] Create auth context/hook in frontend/src/hooks/useAuth.ts for state management
+- [ ] T054 Create Login page component in frontend/src/pages/Login.tsx with form validation
+- [ ] T055 [P] Create ProtectedRoute component in frontend/src/components/ProtectedRoute.tsx
+- [ ] T056 Set up React Router in frontend/src/App.tsx with login and protected routes
+- [ ] T057 [P] Create basic UI components: Button, Input, Card in frontend/src/components/ui/
+
+### Testing & Styling
+
+- [ ] T058 [P] Write tests for Login component in frontend/tests/Login.test.tsx
+- [ ] T059 [P] Write tests for auth service in frontend/tests/auth.test.ts
+- [ ] T060 [P] Add responsive styling and layout in frontend/src/App.css
+- [ ] T061 [P] Update frontend .env.sample with REACT_APP_API_URL
+
+**Checkpoint**: At this point, frontend should be set up with working login page
+
+---
+
+## Phase 8: Admin Dashboard UI (Day 6)
+
+**Goal**: Implement content list, editor, media library pages for full admin experience
+
+**Independent Test**: Can be fully tested by navigating through all pages, creating/editing content, uploading media
+
+**Dependencies**: Requires Phase 7 (Frontend Setup), Phase 4 (Content API), Phase 5 (Media API), and Phase 6 (AI API)
+
+### Content Management Pages
+
+- [ ] T062 Create Dashboard layout component in frontend/src/components/Layout.tsx with navigation
+- [ ] T063 Create ContentList page in frontend/src/pages/ContentList.tsx to display all content
+- [ ] T064 [P] Create content service in frontend/src/services/content.ts for CRUD operations
+- [ ] T065 Create ContentEditor page in frontend/src/pages/ContentEditor.tsx for create/edit
+- [ ] T066 [P] Add dynamic field rendering in ContentEditor based on content type
+- [ ] T067 [P] Create ContentCard component in frontend/src/components/ContentCard.tsx for list view
+
+### Media Library
+
+- [ ] T068 Create MediaLibrary modal component in frontend/src/components/MediaLibrary.tsx
+- [ ] T069 [P] Create media service in frontend/src/services/media.ts for upload/list/delete
+- [ ] T070 [P] Add drag-and-drop upload support in MediaLibrary component
+- [ ] T071 [P] Create MediaGrid component in frontend/src/components/MediaGrid.tsx for displaying media
+- [ ] T072 Implement media selection and attachment to content in ContentEditor
+
+### AI Integration UI
+
+- [ ] T073 [P] Create AI service in frontend/src/services/ai.ts for generate requests
+- [ ] T074 [P] Add "Generate with AI" button in ContentEditor
+- [ ] T075 [P] Create AIGenerateModal component in frontend/src/components/AIGenerateModal.tsx
+- [ ] T076 Integrate AI generation into content workflow (draft, SEO, alt text)
+
+### Polish & Testing
+
+- [ ] T077 [P] Add loading states and error handling across all pages
+- [ ] T078 [P] Implement toast notifications in frontend/src/components/Toast.tsx
+- [ ] T079 [P] Add responsive design for mobile and tablet views
+- [ ] T080 [P] Write component tests for ContentList, ContentEditor, MediaLibrary
+- [ ] T081 [P] Add accessibility features (ARIA labels, keyboard navigation)
+
+**Checkpoint**: At this point, full admin dashboard should be functional
+
+---
+
+## Phase 9: Deployment & Polish (Day 7)
+
+**Goal**: Containerize application, document deployment, perform end-to-end testing
+
+**Independent Test**: Can be fully tested by running docker-compose and performing complete user journey
+
+**Dependencies**: Requires all previous phases to be complete
+
+### Containerization
+
+- [ ] T082 [P] Create Dockerfile for backend in backend/Dockerfile
+- [ ] T083 [P] Create Dockerfile for frontend in frontend/Dockerfile
+- [ ] T084 Create docker-compose.yml in project root with backend, frontend, and postgres services
+- [ ] T085 [P] Create .dockerignore files for backend and frontend
+- [ ] T086 [P] Add health check endpoints and container startup scripts
+
+### Documentation
+
+- [ ] T087 [P] Update README.md with complete setup instructions
+- [ ] T088 [P] Add API documentation in docs/API.md
+- [ ] T089 [P] Create deployment guide in docs/DEPLOYMENT.md
+- [ ] T090 [P] Document environment variables in .env.sample files
+- [ ] T091 [P] Add troubleshooting guide in docs/TROUBLESHOOTING.md
+
+### Testing & Quality Assurance
+
+- [ ] T092 [P] Run full test suite and ensure all tests pass (backend + frontend)
+- [ ] T093 Perform end-to-end test: auth → create content → upload media → generate AI → publish
+- [ ] T094 [P] Test application in different browsers (Chrome, Firefox, Safari)
+- [ ] T095 [P] Verify mobile responsiveness on different screen sizes
+- [ ] T096 [P] Run security audit (npm audit, check for vulnerabilities)
+- [ ] T097 [P] Performance testing: verify API response times < 300ms
+
+### Final Polish
+
+- [ ] T098 [P] Fix any remaining bugs identified during testing
+- [ ] T099 [P] Optimize bundle sizes and image assets
+- [ ] T100 [P] Add production build scripts in package.json
+- [ ] T101 [P] Create demo data seeding script
+- [ ] T102 Prepare demo presentation script
+
+**Checkpoint**: Application ready for deployment and demo
+
+---
+
+## User Story Dependencies
+
+```
+Phase 1 (Setup)
+    ↓
+Phase 2 (Foundational - BLOCKS ALL STORIES)
+    ↓
+    ├─→ Phase 3 (US1: Auth) ✅
+    │       ↓
+    │       ├─→ Phase 4 (US2: Content CRUD) ✅
+    │       │
+    │       ├─→ Phase 5 (US3: Media Upload) ✅
+    │       │
+    │       ├─→ Phase 6 (US4: AI Generation) ✅
+    │       │
+    │       └─→ Phase 7 (Frontend Login - Day 5)
+    │               ↓
+    │               └─→ Phase 8 (Admin Dashboard - Day 6)
+    │
+    └─→ Phase 9 (Deployment - Day 7)
+```
+
+**Critical Path**: Phase 1 → Phase 2 → Phase 3 → Phase 7 → Phase 8 → Phase 9
+
+**Independent Streams**:
+- Backend features (Phases 4, 5, 6) can be developed in parallel after Phase 3
+- Frontend (Phases 7-8) requires Phase 3 (auth API) but can proceed while backend features are being developed
+
+---
+
+## Parallel Execution Opportunities
+
+### Phase 7 (Frontend Setup)
+- T046-T050: Project setup tasks (all parallel)
+- T051-T053: Service layer tasks (all parallel)
+- T057-T061: UI components and testing (all parallel)
+- Sequential: T054 → T055 → T056 (depends on auth service)
+
+### Phase 8 (Dashboard UI)
+- T064, T069, T073: Service layer (all parallel)
+- T067, T071, T075, T078: Reusable components (all parallel)
+- T077-T081: Polish and testing (all parallel)
+- Sequential: T062 → T063 → T065 → T066 → T072 → T074 → T076
+
+### Phase 9 (Deployment)
+- T082-T086: Docker setup (all parallel)
+- T087-T091: Documentation (all parallel)
+- T092, T094-T097: Testing and QA (all parallel)
+- T098-T102: Final polish (all parallel)
+- Sequential: T093 must run after T092
+
+---
+
 ## Notes
 
 - [P] tasks = different files, no dependencies
@@ -220,3 +435,5 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
+- Frontend (Phases 7-8) focuses on UI/UX and integrates with completed backend APIs
+- Day 7 (Phase 9) is primarily integration, documentation, and deployment - no new features

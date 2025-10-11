@@ -29,6 +29,10 @@ import {
   listMediaValidation,
   attachMediaValidation,
 } from './controllers/media';
+import {
+  generate,
+  generateValidation,
+} from './controllers/ai';
 import { authenticateToken, requireEditor } from './middleware/auth';
 import { upload } from './middleware/upload';
 
@@ -135,6 +139,14 @@ app.get(
   '/api/v1/content/:contentId/media',
   authenticateToken,
   getContentMedia
+);
+
+// AI routes - require authentication
+app.post(
+  '/api/v1/ai/generate',
+  authenticateToken,
+  generateValidation,
+  generate
 );
 
 // 404 handler
