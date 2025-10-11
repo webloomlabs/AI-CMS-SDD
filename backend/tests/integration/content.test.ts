@@ -23,15 +23,22 @@ describe('Content API', () => {
     contentTypeId = contentType!.id;
   });
 
-  afterAll(async () => {
-    // Cleanup test content
-    await prisma.contentItem.deleteMany({
-      where: { title: { contains: 'Test Article' } },
-    });
-    await prisma.$disconnect();
+afterAll(async () => {
+  // Cleanup test content - delete relations first
+  await prisma.contentMediaRelation.deleteMany({
+    where: {
+      content: {
+        title: { contains: 'Test Article' },
+      },
+    },
   });
-
-  describe('POST /api/v1/content', () => {
+  
+  await prisma.contentItem.deleteMany({
+    where: { title: { contains: 'Test Article' } },
+  });
+  
+  await prisma.$disconnect();
+});  describe('POST /api/v1/content', () => {
     it('should create content item with fields', async () => {
       const res = await request(app)
         .post('/api/v1/content')

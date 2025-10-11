@@ -95,6 +95,11 @@ export class ContentService {
       include: {
         fields: true,
         contentType: true,
+        media: {
+          include: {
+            media: true,
+          },
+        },
       },
       orderBy: {
         updatedAt: 'desc',

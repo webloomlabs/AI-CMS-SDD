@@ -227,6 +227,11 @@ describe('ContentService', () => {
         include: {
           fields: true,
           contentType: true,
+          media: {
+            include: {
+              media: true,
+            },
+          },
         },
         orderBy: {
           updatedAt: 'desc',
@@ -259,6 +264,11 @@ describe('ContentService', () => {
         include: {
           fields: true,
           contentType: true,
+          media: {
+            include: {
+              media: true,
+            },
+          },
         },
         orderBy: {
           updatedAt: 'desc',
@@ -292,6 +302,11 @@ describe('ContentService', () => {
         include: {
           fields: true,
           contentType: true,
+          media: {
+            include: {
+              media: true,
+            },
+          },
         },
         orderBy: {
           updatedAt: 'desc',
@@ -327,6 +342,11 @@ describe('ContentService', () => {
         include: {
           fields: true,
           contentType: true,
+          media: {
+            include: {
+              media: true,
+            },
+          },
         },
         orderBy: {
           updatedAt: 'desc',

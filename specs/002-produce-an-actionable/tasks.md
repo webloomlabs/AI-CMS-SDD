@@ -1,7 +1,28 @@
 # Tasks: AI-Native CMS MVP
 
 **Input**: Design documents from `/specs/002-produce-an-actionable/`
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
+**Prerequisit## Implementation Strategy
+
+### MVP First (User Stories 1, 2 & 3)
+
+1. Complete Phase 1: Setup ✅
+2. Complete Phase 2: Foundational (CRITICAL - blocks all stories) ✅
+3. Complete Phase 3: User Story 1 (Authentication) ✅
+4. **VALIDATE**: Test User Story 1 independently ✅
+5. Complete Phase 4: User Story 2 (Content CRUD) ✅
+6. **VALIDATE**: Test User Story 2 independently ✅
+7. Complete Phase 5: User Story 3 (Media Upload & Management)
+8. **STOP and VALIDATE**: Test User Story 3 independently
+9. **END-TO-END TEST**: Auth → Create Content → Upload Media → Attach → Publish
+10. Deploy/demo if ready
+
+### Extended MVP (Add User Story 4)
+
+11. Complete User Story 4: AI Content Generation
+12. Full integration testing
+13. Production deployment
+
+---red), spec.md (required for user stories), research.md, data-model.md, contracts/
 
 **Tests**: Included as requested in the sprint plan.
 
@@ -80,6 +101,7 @@
 
 - **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
 - **User Story 2 (P2)**: Can start after User Story 1 (P1) - Requires authentication for content operations
+- **User Story 3 (P3)**: Can start after User Story 2 (P2) - Requires content items to attach media to
 
 ### Within Each User Story
 
@@ -154,6 +176,38 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 - [x] T023 [US2] Seed default content type and sample content item in backend/prisma/seed.ts
 
 **Checkpoint**: At this point, User Story 2 should be fully functional and testable independently
+
+---
+
+## Phase 5: User Story 3 - Media Upload and Management (Priority: P3) 🎯 MVP
+
+**Goal**: Enable editors to upload media files, process images, and attach them to content items
+
+**Independent Test**: Can be fully tested by uploading a file, verifying processing (width/height extraction), and attaching to content
+
+**Dependencies**: Requires Phase 2 (Foundational), Phase 3 (US1 - Auth), and Phase 4 (US2 - Content) to be complete
+
+### Tests for User Story 3 ⚠️
+
+**NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+
+- [x] T024 [P] [US3] Unit test for storage provider in backend/tests/unit/storage.test.ts
+- [x] T025 [P] [US3] Unit test for media service in backend/tests/unit/media.test.ts
+- [x] T026 [P] [US3] Integration test for media endpoints in backend/tests/integration/media.test.ts
+
+### Implementation for User Story 3
+
+- [x] T027 [US3] Create storage provider interface in backend/src/utils/storage/StorageProvider.ts
+- [x] T028 [US3] Implement LocalStorage provider with Sharp for image processing in backend/src/utils/storage/LocalStorage.ts
+- [x] T029 [US3] Create media service for upload/list/delete operations in backend/src/services/media.ts
+- [x] T030 [US3] Implement media controller: POST/GET/DELETE /api/v1/media in backend/src/controllers/media.ts
+- [x] T031 [US3] Configure Multer middleware for file uploads in backend/src/middleware/upload.ts
+- [x] T032 [US3] Wire media routes to Express app in backend/src/index.ts
+- [x] T033 [US3] Update content endpoints to support media relations in backend/src/controllers/content.ts
+- [x] T034 [US3] Create uploads directory and configure .gitignore in backend/uploads/
+- [x] T035 [US3] Update .env.sample with UPLOAD_PATH and STORAGE_PROVIDER
+
+**Checkpoint**: At this point, User Story 3 should be fully functional and testable independently
 
 ---
 
