@@ -338,11 +338,11 @@ Task: "Integration test for login endpoint in backend/tests/integration/auth.tes
 
 ### Containerization
 
-- [ ] T082 [P] Create Dockerfile for backend in backend/Dockerfile
-- [ ] T083 [P] Create Dockerfile for frontend in frontend/Dockerfile
-- [ ] T084 Create docker-compose.yml in project root with backend, frontend, and postgres services
-- [ ] T085 [P] Create .dockerignore files for backend and frontend
-- [ ] T086 [P] Add health check endpoints and container startup scripts
+- [X] T082 [P] Create Dockerfile for backend in backend/Dockerfile
+- [X] T083 [P] Create Dockerfile for frontend in frontend/Dockerfile
+- [X] T084 Create docker-compose.yml in project root with backend, frontend, and postgres services
+- [X] T085 [P] Create .dockerignore files for backend and frontend
+- [X] T086 [P] Add health check endpoints and container startup scripts
 
 ### Documentation
 
